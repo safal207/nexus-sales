@@ -5,7 +5,12 @@
       "Bash(do cmd //c \"move \"\"$file\"\" docs\\archive\\\")",
       "Bash(cmd /c:*)",
       "Bash(powershell:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nOrganize documentation: moved working .md files to docs/ folder\n\nRestructured project documentation by moving all internal working docs\nto organized subfolders in docs/:\n- docs/architecture - Architecture documents\n- docs/bmad-framework - BMAD framework files\n- docs/agents - Agent briefings and communications\n- docs/reports - Analysis and completion reports\n- docs/implementation - Implementation plans and testing\n- docs/innovation - Innovation strategies and POCs\n- docs/archive - Legacy guides and miscellaneous docs\n\nKept only README.md in repository root for clean public presentation.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git stash:*)",
+      "Bash(git pull:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

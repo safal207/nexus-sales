@@ -1,6 +1,6 @@
 import { prisma } from '../prisma';
 
-import { Order, Prisma, OrderStatus } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 
 export class OrderRepository {
   async findById(id: string): Promise<Order | null> {

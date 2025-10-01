@@ -89,10 +89,12 @@ export async function POST(request: NextRequest) {
     }
 
     const newProduct = await productRepository.create({
-      userId: auth.userId,
       name: payload.name,
       description: payload.description ?? null,
       price: payload.price,
+      user: {
+        connect: { id: auth.userId },
+      },
     });
 
     return NextResponse.json({ success: true, product: newProduct }, { status: 201 });
