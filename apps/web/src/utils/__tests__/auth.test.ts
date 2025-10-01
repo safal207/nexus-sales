@@ -21,10 +21,13 @@ const createMockRequest = (authorization?: string): NextRequest => {
 describe('Auth Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    process.env.JWT_SECRET = 'test-secret'
   })
 
   describe('generateToken', () => {
+    beforeEach(() => {
+      process.env.JWT_SECRET = 'test-secret'
+    })
+
     it('should generate a token with correct payload', () => {
       const payload = { userId: 1, email: 'test@test.com' }
       const mockToken = 'mock-jwt-token'
@@ -42,9 +45,10 @@ describe('Auth Utils', () => {
     })
 
     it('should use default secret when JWT_SECRET not set', () => {
-      const originalSecret = process.env.JWT_SECRET
-      delete process.env.JWT_SECRET
       const payload = { userId: 1, email: 'test@test.com' }
+
+      // Clear the env var within the test scope
+      delete process.env.JWT_SECRET
 
       generateToken(payload)
 
@@ -53,12 +57,14 @@ describe('Auth Utils', () => {
         'default-secret-change-in-production',
         { expiresIn: '7d' }
       )
-
-      process.env.JWT_SECRET = originalSecret
     })
   })
 
   describe('verifyToken', () => {
+    beforeEach(() => {
+      process.env.JWT_SECRET = 'test-secret'
+    })
+
     it('should verify valid token', () => {
       const mockPayload = { userId: 1, email: 'test@test.com', iat: 123, exp: 456 }
       mockedJwt.verify.mockReturnValue(mockPayload as unknown as never)

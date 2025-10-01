@@ -69,7 +69,7 @@ describe('HuggingFaceEmotionService', () => {
     });
 
     await expect(service.analyzeText('This will also fail')).rejects.toThrow(
-      'Could not determine top emotion from API response.'
+      'Could not determine top emotion from API response'
     );
   });
 });
