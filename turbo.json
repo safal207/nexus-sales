@@ -1,0 +1,65 @@
+{
+    "$schema":  "https://turborepo.com/schema.json",
+    "ui":  "tui",
+    "tasks":  {
+                  "build":  {
+                                "dependsOn":  [
+                                                  "^build"
+                                              ],
+                                "inputs":  [
+                                               "$TURBO_DEFAULT$",
+                                               ".env*",
+                                               "next.config.*",
+                                               "tailwind.config.*",
+                                               "postcss.config.*",
+                                               "tsconfig*.json"
+                                           ],
+                                "outputs":  [
+                                                ".next/**",
+                                                "dist/**",
+                                                "build/**"
+                                            ],
+                                "env": [
+                                  "NODE_ENV",
+                                  "JWT_SECRET",
+                                  "NEXT_PUBLIC_API_URL"
+                                ]
+                            },
+                  "lint":  {
+                                "dependsOn":  [
+                                                  "^lint"
+                                              ],
+                               "inputs": [
+                                 "**/*.{js,jsx,ts,tsx,cjs,mjs}",
+                                 "eslint.config.*",
+                                 ".eslintrc*",
+                                 "package.json"
+                               ],
+                               "env": [
+                                 "JWT_SECRET"
+                               ]
+                           },
+                  "check-types":  {
+                                      "dependsOn":  [
+                                                        "^check-types"
+                                                    ]
+                                  },
+                  "dev":  {
+                              "cache":  false,
+                              "persistent":  true
+                          },
+                  "test": {
+                      "dependsOn": ["^build"],
+                      "inputs": ["$TURBO_DEFAULT$", "jest.config.mjs", "jest.setup.js"],
+                      "outputs": ["coverage/**"]
+                  }
+              },
+    "globalEnv":  [
+                      "JWT_SECRET",
+                      "NODE_ENV"
+                  ],
+    "globalDependencies": [
+      "package-lock.json",
+      "turbo.json"
+    ]
+}

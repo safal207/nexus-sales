@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        button { margin: 5px; padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; background: #f8f9fa; border-left: 3px solid #007bff; }
+        .error { background: #f8d7da; border-left-color: #dc3545; color: #721c24; }
+        .success { background: #d4edda; border-left-color: #28a745; color: #155724; }
+    </style>
+</head>
+<body>
+    <h1>🧪 API Testing Dashboard</h1>
+
+    <div class="test-section">
+        <h3>🔐 Login Test</h3>
+        <button onclick="testLogin()">Test Login (test@test.com / password123)</button>
+        <div id="loginResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📝 Register Test</h3>
+        <button onclick="testRegister()">Test Register (newuser@test.com / password123)</button>
+        <div id="registerResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔑 Forgot Password Test</h3>
+        <button onclick="testForgotPassword()">Test Forgot Password (test@test.com)</button>
+        <div id="forgotResult" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testLogin() {
+            const result = document.getElementById('loginResult');
+            result.style.display = 'block';
+            result.className = 'result';
+            result.innerHTML = '⏳ Testing...';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@test.com',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `✅ Success: ${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `❌ Error ${response.status}: ${data.message}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `💥 Network Error: ${error.message}`;
+            }
+        }
+
+        async function testRegister() {
+            const result = document.getElementById('registerResult');
+            result.style.display = 'block';
+            result.className = 'result';
+            result.innerHTML = '⏳ Testing...';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'newuser@test.com',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `✅ Success: ${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `❌ Error ${response.status}: ${data.message}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `💥 Network Error: ${error.message}`;
+            }
+        }
+
+        async function testForgotPassword() {
+            const result = document.getElementById('forgotResult');
+            result.style.display = 'block';
+            result.className = 'result';
+            result.innerHTML = '⏳ Testing...';
+
+            try {
+                const response = await fetch('/api/auth/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@test.com'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `✅ Success: ${JSON.stringify(data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `❌ Error ${response.status}: ${data.message}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `💥 Network Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

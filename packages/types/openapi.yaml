@@ -1,0 +1,327 @@
+openapi: 3.1.0
+info:
+  title: NEXUS.SALES API
+  version: 0.1.0
+servers:
+  - url: http://localhost:3001
+paths:
+  /api/auth/register:
+    post:
+      summary: Register seller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RegisterRequest" }
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthSuccess" }
+        "409":
+          description: Email exists
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/auth/login:
+    post:
+      summary: Login seller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginRequest" }
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthSuccess" }
+        "400":
+          description: Invalid creds
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/products:
+    get:
+      summary: List products (seller)
+      security: [ { bearerAuth: [] } ]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  products:
+                    type: array
+                    items: { $ref: "#/components/schemas/Product" }
+    post:
+      summary: Create product
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  product: { $ref: "#/components/schemas/Product" }
+
+  /api/products/{id}:
+    get:
+      summary: Get product
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  product: { $ref: "#/components/schemas/Product" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+    patch:
+      summary: Update product
+      security: [ { bearerAuth: [] } ]
+      parameters: [ { $ref: "#/components/parameters/ProductId" } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductInput" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  product: { $ref: "#/components/schemas/Product" }
+    delete:
+      summary: Delete product
+      security: [ { bearerAuth: [] } ]
+      parameters: [ { $ref: "#/components/parameters/ProductId" } ]
+      responses:
+        "204":
+          description: Deleted
+
+  /api/public/products/{id}:
+    get:
+      summary: Public product view
+      parameters: [ { $ref: "#/components/parameters/ProductId" } ]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  product: { $ref: "#/components/schemas/ProductPublic" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/public/orders:
+    post:
+      summary: Create order (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/OrderCreateRequest" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OrderCreateResponse" }
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "409":
+          description: Duplicate / rate limited
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/events:
+    post:
+      summary: Track single event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Event" }
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Accepted" }
+
+  /api/events/batch:
+    post:
+      summary: Track batch events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                events:
+                  type: array
+                  items: { $ref: "#/components/schemas/Event" }
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Accepted" }
+
+components:
+  parameters:
+    ProductId:
+      in: path
+      name: id
+      required: true
+      schema: { type: string }
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        success: { type: boolean, const: false }
+        message: { type: string }
+    Accepted:
+      type: object
+      properties:
+        success: { type: boolean, const: true }
+        accepted: { type: boolean, const: true }
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    AuthSuccess:
+      type: object
+      properties:
+        success: { type: boolean, const: true }
+        token: { type: string }
+        user: { $ref: "#/components/schemas/User" }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        createdAt: { type: string, format: date-time }
+
+    ProductInput:
+      type: object
+      required: [title, price]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        price: { type: number }
+        active: { type: boolean }
+
+    Product:
+      allOf:
+        - $ref: "#/components/schemas/ProductInput"
+        - type: object
+          properties:
+            id: { type: string }
+            createdAt: { type: string, format: date-time }
+            updatedAt: { type: string, format: date-time }
+
+    ProductPublic:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        price: { type: number }
+        active: { type: boolean }
+
+    OrderCreateRequest:
+      type: object
+      required: [productId, email]
+      properties:
+        productId: { type: string }
+        email: { type: string, format: email }
+        name: { type: string }
+        abVariant: { type: string }
+
+    Order:
+      type: object
+      properties:
+        id: { type: string }
+        productId: { type: string }
+        email: { type: string, format: email }
+        status: { type: string, enum: [created, paid, failed] }
+        createdAt: { type: string, format: date-time }
+
+    OrderCreateResponse:
+      type: object
+      properties:
+        success: { type: boolean, const: true }
+        order: { $ref: "#/components/schemas/Order" }
+
+    Event:
+      type: object
+      required: [name, ts]
+      properties:
+        name: { type: string, enum: [page_view, start_checkout, submit_order_attempt, order_created, upsell_view, upsell_click] }
+        ts: { type: string, format: date-time }
+        sessionId: { type: string }
+        productId: { type: string }
+        orderId: { type: string }
+        referrer: { type: string }
+        abVariant: { type: string }
