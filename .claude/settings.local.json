@@ -1,23 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run:*)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(taskkill:*)",
-      "Bash(cmd //c:*)",
-      "Bash(python:*)",
-      "Bash(npm install:*)",
-      "Bash(npx playwright test:*)",
-      "Bash(curl:*)",
-      "Bash(npx tsc:*)",
-      "Bash(npx eslint:*)",
-      "Bash(find:*)",
-      "Bash(tree:*)",
-      "Bash(node:*)",
-      "Bash(npm --version)",
-      "Bash(move KIMI_K15_DAY2_BRIEFING.md KIMI_K2_DAY2_BRIEFING.md)",
-      "Bash(ren:*)"
+      "Bash(for file in CONSCIOUS_FUNNELS_README.md EMOTIONAL_ANALYTICS_IMPLEMENTATION.md FUNNEL_BUILDER_README.md DEVELOPER_ONBOARDING_GUIDE.md GEMINI_AI_INTEGRATION_GUIDE.md README_NEW.md TEAM_TASKS.md)",
+      "Bash(do cmd //c \"move \"\"$file\"\" docs\\archive\\\")",
+      "Bash(cmd /c:*)",
+      "Bash(powershell:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
