@@ -7,11 +7,8 @@ const outputFileTracingRoot = path.resolve(fileURLToPath(new URL('../../', impor
 const nextConfig = {
   outputFileTracingRoot,
   experimental: {
-    typedRoutes: true,
     optimizePackageImports: ['recharts'],
   },
-  swcMinify: true,
-  productionBrowserSourceMaps: false,
   transpilePackages: ['@nexus/domain', '@nexus/testing', '@repo/ui'],
 };
 

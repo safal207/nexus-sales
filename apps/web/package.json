@@ -24,7 +24,9 @@
     "migrate:up": "node-pg-migrate up -m migrations",
     "migrate:down": "node-pg-migrate down -m migrations",
     "migrate:status": "node-pg-migrate status -m migrations",
-    "verify:db": "tsx scripts/verify-db.ts"
+    "verify:db": "tsx scripts/verify-db.ts",
+    "seed": "tsx scripts/seed.ts",
+    "seed:production": "tsx scripts/seed-production.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -49,6 +51,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@playwright/test": "^1.55.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",

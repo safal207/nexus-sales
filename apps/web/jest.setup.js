@@ -53,6 +53,7 @@ process.env = {
   ...process.env,
   NODE_ENV: 'test',
   JWT_SECRET: 'test-secret',
+  JWT_SECRET_KEY: 'test-secret',
 }
 
 // Setup test cleanup
