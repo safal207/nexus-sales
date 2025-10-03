@@ -48,14 +48,14 @@ async function seedProductionData() {
       await prisma.order.create({
         data: {
           email: faker.internet.email(),
-          name: faker.name.fullName(),
+          name: faker.person.fullName(),
           status: randomStatus,
           amount: parseInt(faker.commerce.price({ min: 10, max: 1000, dec: 0 })),
-          productId: demoProducts[productIndex].id,
+          productId: demoProducts[productIndex]?.id,
         },
       });
       
-      console.log(`Created demo order for product: ${demoProducts[productIndex].name}`);
+      console.log(`Created demo order for product: ${demoProducts[productIndex]?.name || 'Unknown'}`);
     }
     
     console.log('Production demo data seeding completed successfully!');

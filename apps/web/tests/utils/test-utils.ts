@@ -1,5 +1,7 @@
 // Test utilities for Nexus Sales E2E tests
 
+import { Page } from '@playwright/test';
+
 /**
  * Generates a random email address for testing purposes
  */
@@ -22,7 +24,7 @@ export const generateRandomPassword = (): string => {
 /**
  * Waits for a specific network request to complete
  */
-export const waitForNetworkIdle = async (page) => {
+export const waitForNetworkIdle = async (page: Page) => {
   await page.route('**/*', (route) => {
     route.continue();
   });
@@ -34,7 +36,7 @@ export const waitForNetworkIdle = async (page) => {
 /**
  * Waits for a specific API call to complete
  */
-export const waitForApiCall = async (page, urlPattern) => {
+export const waitForApiCall = async (page: Page, urlPattern: string) => {
   const [response] = await Promise.all([
     page.waitForResponse(urlPattern),
     // Add your action that triggers the API call here
@@ -71,7 +73,7 @@ export const generateOrderData = () => {
 /**
  * Checks if an element exists on the page
  */
-export const elementExists = async (page, selector) => {
+export const elementExists = async (page: Page, selector: string) => {
   try {
     const element = await page.waitForSelector(selector, { timeout: 3000 });
     return !!element;
@@ -83,7 +85,7 @@ export const elementExists = async (page, selector) => {
 /**
  * Retry an action with a timeout
  */
-export const retry = async (fn, maxRetries = 3, delay = 1000) => {
+export const retry = async <T>(fn: () => Promise<T>, maxRetries = 3, delay = 1000): Promise<T> => {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
@@ -92,12 +94,13 @@ export const retry = async (fn, maxRetries = 3, delay = 1000) => {
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
+  throw new Error('Retry function should never reach this point');
 };
 
 /**
  * Waits for a specific text to appear on the page
  */
-export const waitForText = async (page, text, timeout = 10000) => {
+export const waitForText = async (page: Page, text: string, timeout = 10000) => {
   await page.waitForFunction(
     (textContent) => {
       return document.body && document.body.textContent && document.body.textContent.includes(textContent);

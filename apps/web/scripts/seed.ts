@@ -33,14 +33,14 @@ async function seedData() {
       const userIndex = Math.floor(Math.random() * users.length);
       const product = await prisma.product.create({
         data: {
-          userId: users[userIndex].id,
+          userId: users[userIndex]!.id,
           name: faker.commerce.productName(),
           description: faker.commerce.productDescription(),
           price: parseInt(faker.commerce.price({ min: 10, max: 1000, dec: 0 })),
         },
       });
       products.push(product);
-      console.log(`Created product: ${product.name} for user ${users[userIndex].email}`);
+      console.log(`Created product: ${product.name} for user ${users[userIndex]?.email || 'Unknown'}`);
     }
     
     // Создать 50 заказов
@@ -52,14 +52,14 @@ async function seedData() {
       await prisma.order.create({
         data: {
           email: faker.internet.email(),
-          name: faker.name.fullName(),
+          name: faker.person.fullName(),
           status: randomStatus,
           amount: parseInt(faker.commerce.price({ min: 10, max: 1000, dec: 0 })),
-          productId: products[productIndex].id,
+          productId: products[productIndex]?.id,
         },
       });
       
-      console.log(`Created order for product: ${products[productIndex].name}`);
+      console.log(`Created order for product: ${products[productIndex]?.name || 'Unknown'}`);
     }
     
     console.log('Database seeding completed successfully!');

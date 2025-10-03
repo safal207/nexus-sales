@@ -1,10 +1,24 @@
-import Stripe from 'stripe';
+import { loadStripe } from '@stripe/stripe-js';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing STRIPE_SECRET_KEY environment variable');
-}
+// Initialize Stripe with publishable key
+export const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-12-18.acacia',
-  typescript: true,
-});
+// Stripe configuration
+export const STRIPE_CONFIG = {
+  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+} as const;
+
+// Helper function to format amount for Stripe (cents to dollars)
+export const formatAmountForStripe = (amount: number): number => {
+  return amount; // Amount is already in cents in our database
+};
+
+// Helper function to format amount for display (cents to dollars)
+export const formatAmountForDisplay = (amount: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount / 100);
+};

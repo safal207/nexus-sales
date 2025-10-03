@@ -107,11 +107,63 @@ export function createMockNextRequest(init: MockRequestInit = {}): NextRequest {
       set: (name: string, value: string) => {
         cookieStore.set(name, value);
         headerBag.set('cookie', serialiseCookies(cookieStore));
+        return {
+          get: (key: string) => {
+            const value = cookieStore.get(key);
+            return value ? { name: key, value } : undefined;
+          },
+          getAll: () => Array.from(cookieStore.entries()).map(([name, value]) => ({ name, value })),
+          has: (name: string) => cookieStore.has(name),
+          set: (name: string, value: string) => {
+            cookieStore.set(name, value);
+            headerBag.set('cookie', serialiseCookies(cookieStore));
+          },
+          delete: (name: string) => {
+            cookieStore.delete(name);
+            headerBag.set('cookie', serialiseCookies(cookieStore));
+          },
+          size: cookieStore.size,
+          clear: () => {
+            cookieStore.clear();
+            headerBag.set('cookie', serialiseCookies(cookieStore));
+          },
+          [Symbol.iterator]: () => Array.from(cookieStore.entries()).map(([name, value]) => [name, { name, value }] as [string, any]).values(),
+        } as any;
       },
       delete: (name: string) => {
+        const existed = cookieStore.has(name);
         cookieStore.delete(name);
         headerBag.set('cookie', serialiseCookies(cookieStore));
+        return existed;
       },
+      size: cookieStore.size,
+      clear: () => {
+        cookieStore.clear();
+        headerBag.set('cookie', serialiseCookies(cookieStore));
+        return {
+          get: (key: string) => {
+            const value = cookieStore.get(key);
+            return value ? { name: key, value } : undefined;
+          },
+          getAll: () => Array.from(cookieStore.entries()).map(([name, value]) => ({ name, value })),
+          has: (name: string) => cookieStore.has(name),
+          set: (name: string, value: string) => {
+            cookieStore.set(name, value);
+            headerBag.set('cookie', serialiseCookies(cookieStore));
+          },
+          delete: (name: string) => {
+            cookieStore.delete(name);
+            headerBag.set('cookie', serialiseCookies(cookieStore));
+          },
+          size: cookieStore.size,
+          clear: () => {
+            cookieStore.clear();
+            headerBag.set('cookie', serialiseCookies(cookieStore));
+          },
+          [Symbol.iterator]: () => Array.from(cookieStore.entries()).map(([name, value]) => [name, { name, value }] as [string, any]).values(),
+        } as any;
+      },
+      [Symbol.iterator]: () => Array.from(cookieStore.entries()).map(([name, value]) => [name, { name, value }] as [string, any]).values(),
     },
   };
 

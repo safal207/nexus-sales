@@ -1,21 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
-import { verifyToken } from '@/app/api/auth/lib/middleware';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const auth = verifyToken(request);
-    if (!auth) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { id } = await params;
+    const { id } = params;
 
     const payment = await prisma.payment.findUnique({
-      where: { id },
+      where: { stripePaymentId: id },
       include: {
         order: {
           include: {
@@ -26,19 +20,28 @@ export async function GET(
     });
 
     if (!payment) {
-      return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Payment not found' },
+        { status: 404 }
+      );
     }
 
-    // Check if user owns the product for this payment
-    if (payment.order.product && payment.order.product.userId !== auth.userId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
-    return NextResponse.json(payment);
+    return NextResponse.json({
+      id: payment.stripePaymentId,
+      amount: payment.amount,
+      currency: payment.currency,
+      status: payment.status,
+      createdAt: payment.createdAt,
+      order: {
+        id: payment.order.id,
+        productName: payment.order.product?.name,
+        customerEmail: payment.order.email,
+      },
+    });
   } catch (error) {
-    console.error('Get payment error:', error);
+    console.error('Error fetching payment:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch payment' },
+      { error: 'Failed to fetch payment details' },
       { status: 500 }
     );
   }

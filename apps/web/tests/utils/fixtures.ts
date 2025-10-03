@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 // Define our custom test fixtures
 interface TestFixtures {
   createUser: () => Promise<{ id: number; email: string; password: string }>;
-  createProduct: (userId: number) => Promise<{ id: number; name: string; description: string; price: number }>;
-  createOrder: (productId: number) => Promise<{ id: string; email: string; name: string; status: string; amount: number }>;
+  createProduct: (userId: number) => Promise<{ id: number; name: string; description: string | null; price: number; userId: number; createdAt: Date; updatedAt: Date }>;
+  createOrder: (productId: number) => Promise<{ id: string; email: string; name: string | null; status: string; amount: number; productId: number | null; createdAt: Date; updatedAt: Date }>;
   cleanup: () => Promise<void>;
 }
 
@@ -52,28 +52,28 @@ export const test = base.extend<TestFixtures>({
         },
       });
     };
-    
-    await use(() => fn);
+
+    await use(fn);
   },
 
   // Create an order fixture
   createOrder: async ({}, use) => {
     const fn = async (productId: number) => {
-      const orderStatuses = ['created', 'processing', 'paid', 'refunded', 'cancelled'];
-      const randomStatus = orderStatuses[Math.floor(Math.random() * orderStatuses.length)];
-      
+      const orderStatuses = ['created', 'processing', 'paid', 'refunded', 'cancelled'] as const;
+      const randomStatus = orderStatuses[Math.floor(Math.random() * orderStatuses.length)] as typeof orderStatuses[number];
+
       return await prisma.order.create({
         data: {
           email: faker.internet.email(),
-          name: faker.name.fullName(),
+          name: faker.person.fullName(),
           status: randomStatus,
           amount: parseInt(faker.commerce.price({ min: 10, max: 1000, dec: 0 })),
           productId,
         },
       });
     };
-    
-    await use(() => fn);
+
+    await use(fn);
   },
 
   // Create a cleanup fixture
