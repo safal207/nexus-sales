@@ -49,6 +49,7 @@ model Order {
   updatedAt DateTime   @updatedAt @map("updated_at")
 
   product   Product?   @relation(fields: [productId], references: [id], onDelete: SetNull)
+  payments  Payment[]
 
   @@index([productId])
   @@map("orders")
@@ -60,4 +61,29 @@ enum OrderStatus {
   paid
   refunded
   cancelled
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  orderId         String   @map("order_id")
+  stripePaymentId String   @unique @map("stripe_payment_id")
+  amount          Int
+  currency        String   @default("usd")
+  status          PaymentStatus
+  metadata        Json?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([stripePaymentId])
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
 }

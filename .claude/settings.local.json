@@ -15,7 +15,15 @@
       "Bash(node:*)",
       "Bash(curl:*)",
       "Bash(git mv:*)",
-      "Bash(npm run test:coverage:*)"
+      "Bash(npm run test:coverage:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(if [ -f .env.local ])",
+      "Bash(then echo \"EXISTS\")",
+      "Bash(else echo \"NOT_FOUND\")",
+      "Bash(fi)",
+      "Bash(cat:*)",
+      "Bash(npx prisma:*)"
     ],
     "deny": [],
     "ask": []
