@@ -3,8 +3,6 @@ import Stripe from 'stripe';
 import { prisma } from '@/lib/db/prisma';
 import { auth } from '@/lib/auth';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(request: NextRequest) {
   try {
     // Get user from auth
@@ -37,6 +35,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // CRITICAL: Validate amount matches product price
+    if (amount !== product.price) {
+      return NextResponse.json(
+        { error: 'Amount mismatch: price has been tampered with' },
+        { status: 400 }
+      );
+    }
+
     // Create order first
     const order = await prisma.order.create({
       data: {
@@ -48,14 +54,20 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Create Stripe Payment Intent first
+    // Create Stripe instance
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+    // Create Stripe Payment Intent with idempotency key
+    const idempotencyKey = `order-${order.id}-${Date.now()}`;
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount, // Amount in cents
+      amount: product.price, // Use verified product price, not client amount
       currency: 'usd',
       metadata: {
         orderId: order.id,
         productId: product.id.toString(),
       },
+    }, {
+      idempotencyKey,
     });
 
     // Create payment record with Stripe payment ID

@@ -55,27 +55,31 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
       return;
     }
 
-    // Update payment status
-    await prisma.payment.updateMany({
-      where: {
-        stripePaymentId: paymentIntent.id,
-      },
-      data: {
-        status: 'succeeded',
-      },
-    });
+    // Use transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+      // Update payment status
+      await tx.payment.updateMany({
+        where: {
+          stripePaymentId: paymentIntent.id,
+        },
+        data: {
+          status: 'succeeded',
+        },
+      });
 
-    // Update order status
-    await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        status: 'paid',
-      },
+      // Update order status
+      await tx.order.update({
+        where: { id: orderId },
+        data: {
+          status: 'paid',
+        },
+      });
     });
 
     console.log(`Payment succeeded for order ${orderId}`);
   } catch (error) {
     console.error('Error handling payment_intent.succeeded:', error);
+    throw error; // Re-throw to ensure webhook retry
   }
 }
 
@@ -88,26 +92,30 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
       return;
     }
 
-    // Update payment status
-    await prisma.payment.updateMany({
-      where: {
-        stripePaymentId: paymentIntent.id,
-      },
-      data: {
-        status: 'failed',
-      },
-    });
+    // Use transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+      // Update payment status
+      await tx.payment.updateMany({
+        where: {
+          stripePaymentId: paymentIntent.id,
+        },
+        data: {
+          status: 'failed',
+        },
+      });
 
-    // Update order status
-    await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        status: 'cancelled',
-      },
+      // Update order status
+      await tx.order.update({
+        where: { id: orderId },
+        data: {
+          status: 'cancelled',
+        },
+      });
     });
 
     console.log(`Payment failed for order ${orderId}`);
   } catch (error) {
     console.error('Error handling payment_intent.payment_failed:', error);
+    throw error; // Re-throw to ensure webhook retry
   }
 }
