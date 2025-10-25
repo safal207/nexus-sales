@@ -1,0 +1,26 @@
+﻿{
+  "name": "@repo/billing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^6.16.2",
+    "stripe": "^19.0.0"
+  },
+  "dependencies": {
+    "@repo/usage": "*"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/node": "^18.19.0",
+    "typescript": "5.9.2"
+  }
+}

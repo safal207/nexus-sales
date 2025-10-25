@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { AuthProvider } from "../contexts/AuthContext";
 import { ToastProvider } from "../components/ui/Toast";
+import { Navigation } from "../components/Navigation";
 import "./globals.css";
+import DynamicGameBackground from "@/components/background/DynamicGameBackground";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,12 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body 
-        className={`${geistSans.variable} ${geistMono.variable}`}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} relative min-h-screen overflow-hidden`}
         suppressHydrationWarning={true}
       >
+        <DynamicGameBackground />
         <ToastProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <div className="relative z-10 flex min-h-screen flex-col">
+              <Navigation />
+              <main className="flex-1 pt-16">
+                {children}
+              </main>
+            </div>
+          </AuthProvider>
         </ToastProvider>
       </body>
     </html>

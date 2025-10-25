@@ -1,4 +1,4 @@
-import path from 'path';
+﻿import path from 'path';
 import { fileURLToPath } from 'url';
 
 const outputFileTracingRoot = path.resolve(fileURLToPath(new URL('../../', import.meta.url)));
@@ -9,7 +9,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['recharts'],
   },
-  transpilePackages: ['@nexus/domain', '@nexus/testing', '@repo/ui'],
+  transpilePackages: ['@nexus/domain', '@nexus/testing', '@repo/ui', '@repo/usage', '@repo/auth', '@repo/billing'],
 };
 
 export default nextConfig;

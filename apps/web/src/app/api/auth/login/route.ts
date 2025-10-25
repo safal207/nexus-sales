@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     const rawBody = (await request.json()) as unknown;
 
     if (!isValidLoginPayload(rawBody)) {
-      return respondWithError('???????????? ?????? ???????.', 400);
+      return respondWithError('Некорректное тело запроса.', 400);
     }
 
     const { email, password } = rawBody;
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
     if (!user || !passwordMatches) {
       console.warn('[auth/login] invalid credentials', { email, passwordMatches });
-      return respondWithError('???????? e-mail ??? ??????.', 401);
+      return respondWithError('Неверный e-mail или пароль.', 401);
     }
 
     const safeUser = toResponseUser(user);
@@ -111,6 +111,6 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error('[auth/login] unexpected error', error);
-    return respondWithError('????????? ?????????????? ??????. ?????????? ?????.', 500);
+    return respondWithError('Произошла непредвиденная ошибка. Попробуйте позже.', 500);
   }
 }

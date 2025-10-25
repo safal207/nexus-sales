@@ -1,4 +1,4 @@
-import nextJest from 'next/jest.js';
+﻿import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files
@@ -16,11 +16,20 @@ const customJestConfig = {
     '^@nexus/domain$': '<rootDir>/../../packages/domain/src/index.ts',
     '^@nexus/domain/emotion$': '<rootDir>/../../packages/domain/src/emotion/index.ts',
     '^@nexus/domain/(.*)$': '<rootDir>/../../packages/domain/src/$1',
+    '^@repo/ui$': '<rootDir>/../../packages/ui/src/index.ts',
+    '^@repo/ui/(.*)$': '<rootDir>/../../packages/ui/src/$1',
+    '^@repo/usage$': '<rootDir>/../../packages/usage/src/index.ts',
+    '^@repo/usage/(.*)$': '<rootDir>/../../packages/usage/src/$1',
+    '^@repo/auth$': '<rootDir>/../../packages/auth/src/index.ts',
+    '^@repo/auth/(.*)$': '<rootDir>/../../packages/auth/src/$1',
+  },
+  transform: {
+    '^.+\\.(css|scss|sass)$': ['jest-transform-css', { config: './jest-css-config.js' }],
   },
   // 2025-09-29 - Claude Code: Use default Next.js transform instead of SWC
   // transform: handled by Next.js jest config
   transformIgnorePatterns: [
-    'node_modules/(?!(@nexus/domain|@nexus/testing|@repo/ui)/)'
+    'node_modules/(?!(@nexus/domain|@nexus/testing|@repo/ui|@repo/usage|@repo/auth)/)'
   ],
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',

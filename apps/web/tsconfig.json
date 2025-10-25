@@ -1,28 +1,52 @@
-{
-  "extends": "@repo/typescript-config/nextjs.json",
-  "compilerOptions": {
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@nexus/domain": ["../../packages/domain/src/index.ts"],
-      "@nexus/domain/*": ["../../packages/domain/src/*"]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    "next.config.js",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "out"
-  ]
+﻿{
+    "extends":  "@repo/typescript-config/nextjs.json",
+    "compilerOptions":  {
+                            "plugins":  [
+                                            {
+                                                "name":  "next"
+                                            }
+                                        ],
+                            "baseUrl":  ".",
+                            "paths":  {
+                                          "@/*":  [
+                                                      "./src/*"
+                                                  ],
+                                          "@nexus/domain":  [
+                                                                "../../packages/domain/src/index.ts"
+                                                            ],
+                                          "@nexus/domain/*":  [
+                                                                  "../../packages/domain/src/*"
+                                                              ],
+                                          "@repo/usage":  [
+                                                              "../../packages/usage/src/index.ts"
+                                                          ],
+                                          "@repo/usage/*":  [
+                                                                "../../packages/usage/src/*"
+                                                            ],
+                                          "@repo/auth":  [
+                                                             "../../packages/auth/src/index.ts"
+                                                         ],
+                                          "@repo/auth/*":  [
+                                                               "../../packages/auth/src/*"
+                                                           ],
+                                          "@repo/billing":  [
+                                                                "../../packages/billing/src/index.ts"
+                                                            ],
+                                          "@repo/billing/*":  [
+                                                                  "../../packages/billing/src/*"
+                                                              ]
+                                      }
+                        },
+    "include":  [
+                    "**/*.ts",
+                    "**/*.tsx",
+                    "next-env.d.ts",
+                    "next.config.js",
+                    ".next/types/**/*.ts"
+                ],
+    "exclude":  [
+                    "node_modules",
+                    ".next",
+                    "out"
+                ]
 }

@@ -39,7 +39,7 @@ describe('POST /api/auth/register', () => {
     const payload = await readJsonResponse(response as NextResponse);
 
     expect(payload.status).toBe(400);
-    expect(payload.body.message).toBe('???????????? ?????? ???????.');
+    expect(payload.body.message).toBe('Некорректное тело запроса.');
     expect(findByEmail).not.toHaveBeenCalled();
   });
 
@@ -54,7 +54,7 @@ describe('POST /api/auth/register', () => {
     const payload = await readJsonResponse(response as NextResponse);
 
     expect(payload.status).toBe(400);
-    expect(payload.body.message).toBe('?????? ?????? ????????? ??????? 8 ????????.');
+    expect(payload.body.message).toBe('Пароль должен содержать минимум 8 символов.');
   });
 
   it('returns 409 when email already exists', async () => {
@@ -77,7 +77,7 @@ describe('POST /api/auth/register', () => {
     const payload = await readJsonResponse(response as NextResponse);
 
     expect(payload.status).toBe(409);
-    expect(payload.body.message).toBe('???????????? ? ????? e-mail ??? ??????????.');
+    expect(payload.body.message).toBe('Пользователь с таким e-mail уже существует.');
     expect(mockedHash).not.toHaveBeenCalled();
   });
 
@@ -127,6 +127,6 @@ describe('POST /api/auth/register', () => {
 
     expect(payload.status).toBe(500);
     expect(payload.body.success).toBe(false);
-    expect(payload.body.message).toBe('????????? ?????????????? ??????. ?????????? ?????.');
+    expect(payload.body.message).toBe('Произошла непредвиденная ошибка. Попробуйте позже.');
   });
 });

@@ -53,7 +53,7 @@ describe('POST /api/auth/login', () => {
     expect(payload.status).toBe(400);
     expect(payload.body).toEqual({
       success: false,
-      message: '???????????? ?????? ???????.',
+      message: 'Некорректное тело запроса.',
     });
     expect(findByEmail).not.toHaveBeenCalled();
   });
@@ -72,7 +72,7 @@ describe('POST /api/auth/login', () => {
 
     expect(payload.status).toBe(401);
     expect(payload.body.success).toBe(false);
-    expect(payload.body.message).toBe('???????? e-mail ??? ??????.');
+    expect(payload.body.message).toBe('Неверный e-mail или пароль.');
     expect(mockedCompare).not.toHaveBeenCalled();
   });
 
@@ -98,7 +98,7 @@ describe('POST /api/auth/login', () => {
     const payload = await readJsonResponse(response as NextResponse);
 
     expect(payload.status).toBe(401);
-    expect(payload.body.message).toBe('???????? e-mail ??? ??????.');
+    expect(payload.body.message).toBe('Неверный e-mail или пароль.');
     expect(mockedCompare).toHaveBeenCalledWith('wrong', 'hashed:secret123');
   });
 
@@ -145,6 +145,6 @@ describe('POST /api/auth/login', () => {
 
     expect(payload.status).toBe(500);
     expect(payload.body.success).toBe(false);
-    expect(payload.body.message).toBe('????????? ?????????????? ??????. ?????????? ?????.');
+    expect(payload.body.message).toBe('Произошла непредвиденная ошибка. Попробуйте позже.');
   });
 });

@@ -1,0 +1,125 @@
+config:
+  target: 'http://localhost:3010'
+  phases:
+    # Ramp up to 100 users over 2 minutes
+    - duration: 120
+      arrivalRate: 1
+      name: "Warm up phase"
+    # Stay at 100 users for 5 minutes
+    - duration: 300
+      arrivalRate: 1
+      name: "Sustained load"
+    # Ramp up to 200 users over 2 minutes
+    - duration: 120
+      arrivalRate: 2
+      name: "High load phase"
+    # Stay at 200 users for 5 minutes
+    - duration: 300
+      arrivalRate: 2
+      name: "Peak load"
+    # Ramp down to 0 users over 2 minutes
+    - duration: 120
+      arrivalRate: 0
+      name: "Cool down"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: "Health check and basic navigation"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+      - think: 3
+
+  - name: "Authentication flow"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          expect:
+            - statusCode: 200
+          capture:
+            json: "$.token"
+            as: "auth_token"
+      - get:
+          url: "/api/products"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: 200
+      - think: 2
+
+  - name: "Product management"
+    weight: 25
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          capture:
+            json: "$.token"
+            as: "auth_token"
+      - post:
+          url: "/api/products"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          json:
+            name: "Load Test Product {{ $randomString() }}"
+            description: "Product created during load testing"
+            price: "{{ $randomInt(1000, 50000) }}"
+          expect:
+            - statusCode: 201
+          capture:
+            json: "$.product.id"
+            as: "product_id"
+      - get:
+          url: "/api/products/{{ product_id }}"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: 200
+      - think: 1
+
+  - name: "Public order creation"
+    weight: 15
+    flow:
+      - post:
+          url: "/api/public/orders"
+          json:
+            productId: 1
+            email: "buyer{{ $randomInt(1, 1000) }}@example.com"
+            name: "Test Buyer {{ $randomString() }}"
+          expect:
+            - statusCode: 201
+      - think: 2
+
+  - name: "Analytics and insights"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          capture:
+            json: "$.token"
+            as: "auth_token"
+      - get:
+          url: "/api/analytics/insights"
+          headers:
+            Authorization: "Bearer {{ auth_token }}"
+          expect:
+            - statusCode: 200
+      - think: 3

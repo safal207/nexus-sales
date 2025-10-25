@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const rawBody = (await request.json()) as unknown;
 
     if (!isValidRegisterPayload(rawBody)) {
-      return respondWithError('???????????? ?????? ???????.', 400);
+      return respondWithError('Некорректное тело запроса.', 400);
     }
 
     const { email, password } = rawBody;
@@ -63,13 +63,13 @@ export async function POST(request: Request) {
 
     if (password.length < 8) {
       console.warn('[auth/register] invalid password length', { email, length: password.length });
-      return respondWithError('?????? ?????? ????????? ??????? 8 ????????.', 400);
+      return respondWithError('Пароль должен содержать минимум 8 символов.', 400);
     }
 
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) {
       console.warn('[auth/register] email already exists', { email });
-      return respondWithError('???????????? ? ????? e-mail ??? ??????????.', 409);
+      return respondWithError('Пользователь с таким e-mail уже существует.', 409);
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -83,6 +83,6 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error('[auth/register] unexpected error', error);
-    return respondWithError('????????? ?????????????? ??????. ?????????? ?????.', 500);
+    return respondWithError('Произошла непредвиденная ошибка. Попробуйте позже.', 500);
   }
 }

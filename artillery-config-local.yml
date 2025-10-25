@@ -1,0 +1,37 @@
+config:
+  target: 'http://localhost:3010'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Local test phase"
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+
+scenarios:
+  - name: "Health check"
+    weight: 50
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+      - think: 2
+
+  - name: "Basic navigation"
+    weight: 30
+    flow:
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+      - think: 1
+
+  - name: "API test"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/products"
+          expect:
+            - statusCode: [200, 401]  # 401 is expected without auth
+      - think: 1

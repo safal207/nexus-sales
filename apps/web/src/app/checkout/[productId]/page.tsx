@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Elements } from '@stripe/react-stripe-js';
-import { stripePromise, STRIPE_CONFIG } from '@/lib/stripe';
+import { stripePromise } from '@/lib/stripe';
 import { PaymentForm } from '@/components/payments/PaymentForm';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';

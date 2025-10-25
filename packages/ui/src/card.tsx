@@ -1,20 +1,21 @@
-import { type JSX } from "react";
+import { type JSX, type ReactNode } from "react";
 
-export function Card({
-  className,
-  title,
-  children,
-  href,
-}: {
+type CardProps = {
   className?: string;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
   href: string;
-}): JSX.Element {
+};
+
+export function Card({ className, title, children, href }: CardProps): JSX.Element {
+  const trackingHref = href.includes('?')
+    ? `${href}&utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo`
+    : `${href}?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo`;
+
   return (
     <a
       className={className}
-      href={`${href}?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo"`}
+      href={trackingHref}
       rel="noopener noreferrer"
       target="_blank"
     >

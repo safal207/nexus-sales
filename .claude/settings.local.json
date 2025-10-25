@@ -23,7 +23,9 @@
       "Bash(else echo \"NOT_FOUND\")",
       "Bash(fi)",
       "Bash(cat:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "Bash(npm run build:*)",
+      "Bash(if exist .next rmdir /s /q .next)"
     ],
     "deny": [],
     "ask": []

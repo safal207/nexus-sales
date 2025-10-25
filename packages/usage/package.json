@@ -1,0 +1,23 @@
+﻿{
+  "name": "@repo/usage",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^6.16.2",
+    "next": "^15.5.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/node": "^18.19.0",
+    "typescript": "5.9.2"
+  }
+}

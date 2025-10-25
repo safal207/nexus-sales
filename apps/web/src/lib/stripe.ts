@@ -1,14 +1,9 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-// Initialize Stripe with publishable key
+// Client-side: Initialize Stripe with publishable key
 export const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
-
-// Stripe configuration
-export const STRIPE_CONFIG = {
-  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-} as const;
 
 // Helper function to format amount for Stripe (cents to dollars)
 export const formatAmountForStripe = (amount: number): number => {
